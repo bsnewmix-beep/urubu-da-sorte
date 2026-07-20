@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Urubu - O Curta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #031c0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 800px;
+            background: linear-gradient(180deg, #093814 0%, #031c0a 100%);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* Botão de Som Global */
+        #btn-mute {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffd700;
+            color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Sistema de Telas */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* TELA DE SPLASH & LOGIN MASCOT */
+        .mascot-img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .mascot-login {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 15px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .splash-title {
+            font-size: 32px;
+            color: #ffd700;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px #000;
+        }
+
+        /* ELEMENTO TREVO */
+        .clover-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .clover-icon {
+            font-size: 45px;
+            animation: pulseClover 2s infinite;
+        }
+
+        .clover-text {
+            color: #4CAF50;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        @keyframes pulseClover {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* INPUTS E BOTÕES */
+        .input-group {
+            width: 100%;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            color: #ffd700;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
+            color: #000;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* TELAS RESTANTES (PIX E JOGO) */
+        .pix-container { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px; border: 2px dashed #4CAF50; width: 100%; }
+        .qr-code { width: 200px; height: 200px; margin: 20px auto; background: white; padding: 10px; border-radius: 10px; cursor: pointer; }
+        .qr-code img { width: 100%; height: 100%; }
+        .pix-loading { color: #aaa; font-size: 14px; margin-top: 15px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* HEADER E SALDO CENTRALIZADO */
+        .header { 
+            width: 100%; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            padding: 10px 15px; 
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3); 
+            position: relative; 
+        }
+        
+        .user-info { 
+            font-size: 13px; 
+            color: #ddd; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        
+        .balance-box { 
+            background: #000; 
+            border: 2px solid #ffd700; 
+            border-radius: 8px; 
+            padding: 4px 10px; 
+            text-align: center; 
+            position: absolute; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        
+        .value { font-size: 15px; font-weight: bold; color: #4CAF50; }
+
+        /* BOTÃO DE SAQUE REPOSICIONADO */
+        .withdraw-wrapper {
+            width: 90%;
+            margin: 3px 0 5px 0;
+        }
+
+        .btn-withdraw-main {
+            background: linear-gradient(180deg, #4CAF50 0%, #2e7d32 100%);
+            color: white;
+            border: 2px solid #ffd700;
+            padding: 5px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
+
+        .slot-machine { display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; background: rgba(0, 0, 0, 0.6); border-top: 2px solid #ffd700; border-bottom: 2px solid #ffd700; position: relative; margin: 3px 0; height: 180px; max-height: 180px; }
+        .win-line { position: absolute; top: 50%; left: 0; width: 100%; height: 60px; transform: translateY(-50%); border-top: 2px dashed rgba(255, 215, 0, 0.5); border-bottom: 2px dashed rgba(255, 215, 0, 0.5); background: rgba(255, 215, 0, 0.1); z-index: 5; pointer-events: none; }
+        .reel { width: 70px; height: 180px; background: #fff; border-radius: 8px; overflow: hidden; border: 2px solid #ffd700; }
+        .symbols { display: flex; flex-direction: column; }
+        .symbol { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 32px; border-bottom: 1px solid #ccc; }
+        
+        .bet-controls { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .bet-btn { background: #333; color: #ffd700; border: 2px solid #ffd700; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .bet-amount { font-size: 16px; color: white; font-weight: bold; min-width: 80px; text-align: center; }
+        .btn-spin { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: #000; border: 2px solid #fff; padding: 7px 20px; font-size: 17px; font-weight: 900; border-radius: 40px; cursor: pointer; width: 90%; animation: pulse 1.5s infinite; margin-bottom: 4px; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .spinning .symbol { filter: blur(5px); }
+
+        /* URUBU ASSISTENTE COM FALAS */
+        .urubu-assistant {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 90%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px dashed #ffd700;
+            padding: 4px 8px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+
+        .urubu-mini-img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ffd700;
+            object-fit: cover;
+        }
+
+        .speech-bubble {
+            font-size: 11px;
+            color: #ffd700;
+            font-weight: bold;
+            text-align: left;
+            flex-grow: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        /* URUBU PULSANTE MAIOR E MAIS EMBAIXO NO ESPAÇO VAZIO */
+        .bottom-mascot-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: auto;
+            padding-bottom: 12px;
+        }
+
+        .pulsing-urubu {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            border: 3px solid #ffd700;
+            object-fit: cover;
+            animation: pulseMascot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseMascot {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 35px rgba(255, 215, 0, 1);
+            }
+        }
+
+        /* MODAIS / POP-UPS ESTILO NOTIFICAÇÃO */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #093814;
+            border: 3px solid #ffd700;
+            padding: 25px 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-modal-green {
+            background: #4CAF50; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase;
+        }
+
+        .btn-modal-gold {
+            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* Notificação Toast Flutuante (Simulando PIX Feito) */
+        .toast-notification {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            border: 2px solid #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: top 0.5s ease;
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toast-notification.show {
+            top: 20px;
+        }
+
+        .coin-shower { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100; overflow: hidden; }
+        .falling-coin { position: absolute; font-size: 30px; top: -50px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Áudios do Jogo -->
+    <audio id="bg-music" loop src="https://assets.mixkit.co/active_storage/sfx/1997/1997-preview.mp3"></audio>
+    <audio id="win-sound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+    
+    <div class="coin-shower" id="coin-shower"></div>
+
+    <!-- TOAST DE NOTIFICAÇÃO PIX FEITO -->
+    <div id="toast-pix" class="toast-notification">
+        <span style="font-size: 30px;">✅</span>
+        <div style="text-align: left;">
+            <div style="font-weight: bold; color: #4CAF50; font-size: 14px;">PIX ENVIADO COM SUCESSO!</div>
+            <div style="font-size: 12px; color: #ccc;">O valor caiu na sua conta bancária.</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        
+        <!-- Botão de Mudo Global -->
+        <button id="btn-mute" onclick="toggleMute()">🔇</button>
+        
+        <!-- POP-UP 1: TENTATIVA DE SAQUE -->
+        <div id="modal-popup-1" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-title">🚨 Atenção</div>
+                <p style="color: #ddd; font-size: 16px; margin-bottom: 10px;">Deseja multiplicar seu dinheiro agora ou realizar o saque?</p>
+                <div class="modal-btns">
+                    <button class="btn-modal-green" onclick="fecharModal1ParaJogo()">Multiplicar</button>
+                    <button class="btn-modal-gold" onclick="irParaTelaPix()">Sacar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- POP-UP 2: ANTES DE FINALIZAR O PIX -->
+        <div id="modal-popup-2" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-title">🔥 Oportunidade Única</div>
+                <p style="color: #ddd; font-size: 16px; margin-bottom: 10px;">Quer mesmo sacar ou prefere multiplicar seu dinheiro agora?</p>
+                <div class="modal-btns">
+                    <button class="btn-modal-green" onclick="voltarParaJogoDoPix()">Multiplicar</button>
+                    <button class="btn-modal-gold" onclick="finalizarPixReal()">PIX (Sacar)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA 1: SPLASH -->
+        <div id="screen-splash" class="screen active">
+            <img src="urubu.png" alt="Mascote Urubu" class="mascot-img" onerror="this.src='https://via.placeholder.com/250/000000/FFD700?text=URUBU'">
+            <h1 class="splash-title">Fortune Urubu</h1>
+            <p style="color: #aaa; margin-top: 10px;">Carregando a sorte...</p>
+        </div>
+
+        <!-- TELA 2: LOGIN -->
+        <div id="screen-login" class="screen">
+            <img src="urubu.png" alt="Mascote Urubu" class="mascot-img mascot-login" onerror="this.src='https://via.placeholder.com/150/000000/FFD700?text=URUBU'">
+            
+            <h2 style="color: #ffd700; margin-bottom: 20px;">Acesse sua conta</h2>
+            <div class="input-group">
+                <label>Usuário</label>
+                <input type="text" id="input-user" value="Vitima123" placeholder="Digite seu usuário">
+            </div>
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" value="******" placeholder="Sua senha secreta">
+            </div>
+            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+
+            <div class="clover-container">
+                <div class="clover-icon">🍀</div>
+                <div class="clover-text">sua sorte está aqui!!</div>
+            </div>
+        </div>
+
+        <!-- TELA 3: DEPÓSITO PIX -->
+        <div id="screen-deposit" class="screen">
+            <h2 style="color: #4CAF50; margin-bottom: 10px;">Saldo Insuficiente</h2>
+            <p style="color: #ddd; margin-bottom: 20px;">Realize um depósito de R$ 1.000,00 via PIX para liberar o jogo.</p>
+            
+            <div class="pix-container">
+                <h3 style="color: white;">Escaneie o QR Code</h3>
+                <div class="qr-code" onclick="confirmarPix()">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=UrubuPixFalso" alt="QR Code PIX">
+                </div>
+                <p class="pix-loading" id="pix-status">Aguardando pagamento...</p>
+            </div>
+        </div>
+
+        <!-- TELA 4: JOGO -->
+        <div id="screen-game" class="screen" style="justify-content: flex-start; padding: 0; display: flex; flex-direction: column;">
+            <header class="header">
+                <div class="user-info">
+                    👤 <span id="display-user">Usuário</span>
+                </div>
+                <div class="balance-box" id="balance-box">
+                    <div style="font-size: 7px; color:#aaa;">SALDO</div>
+                    <div class="value" id="saldo">R$ 1.000,00</div>
+                </div>
+            </header>
+
+            <main class="slot-machine">
+                <div class="win-line"></div>
+                <div class="reel" id="reel-1"><div class="symbols"></div></div>
+                <div class="reel" id="reel-2"><div class="symbols"></div></div>
+                <div class="reel" id="reel-3"><div class="symbols"></div></div>
+            </main>
+
+            <div class="withdraw-wrapper">
+                <button class="btn-withdraw-main" onclick="tentarSacar()">Sacar</button>
+            </div>
+
+            <div class="bet-controls">
+                <button class="bet-btn" onclick="mudarAposta(-10)">-</button>
+                <div class="bet-amount" id="bet-display">R$ 50,00</div>
+                <button class="bet-btn" onclick="mudarAposta(10)">+</button>
+            </div>
+
+            <button class="btn-spin" id="btn-fazer-a-boa">FAZER A BOA</button>
+
+            <!-- Assistente Urubu com Frases -->
+            <div class="urubu-assistant">
+                <img src="urubu.png" alt="Urubu" class="urubu-mini-img" onerror="this.src='https://via.placeholder.com/30/000000/FFD700?text=🦅'">
+                <div class="speech-bubble" id="urubu-speech">"Confia no pai, a próxima rodada paga o dobro! 🦅"</div>
+            </div>
+
+            <!-- Urubu Pulsante Maior no Espaço Vazio Inferior -->
+            <div class="bottom-mascot-container">
+                <img src="urubu.png" alt="Urubu Pulsante" class="pulsing-urubu" onerror="this.src='https://via.placeholder.com/125/000000/FFD700?text=URUBU'">
+            </div>
+        </div>
+
+        <!-- TELA 5: TELA DE SAQUE (PIX PARA CPF) -->
+        <div id="screen-withdraw" class="screen">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">Área de Saque PIX</h2>
+            <p style="color: #ddd; font-size: 14px; margin-bottom: 20px;">Insira sua chave CPF para resgatar seu saldo atual.</p>
+            
+            <div class="input-group">
+                <label>Chave PIX (CPF)</label>
+                <input type="text" value="000.111.222-33" placeholder="Digite seu CPF">
+            </div>
+            <div class="input-group">
+                <label>Valor do Saque</label>
+                <input type="text" id="withdraw-value" value="R$ 1.250,00" readonly style="color: #4CAF50; font-weight: bold;">
+            </div>
+            
+            <button class="btn-primary" onclick="interromperSaqueComPopup2()">Solicitar Saque</button>
+        </div>
+
+        <!-- TELA 6: SAQUE CONCLUÍDO -->
+        <div id="screen-success" class="screen">
+            <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+            <h2 style="color: #4CAF50; margin-bottom: 15px;">Saque Realizado!</h2>
+            <p style="color: #ddd; font-size: 16px; margin-bottom: 30px;">Obrigado por utilizar o Fortune Urubu. Volte sempre para lucrar mais!</p>
+            <button class="btn-primary" onclick="location.reload()">Jogar Novamente</button>
+        </div>
+
+    </div>
+
+    <script>
+        // CONTROLE DE ÁUDIO
+        let isMuted = true;
+        const bgMusic = document.getElementById('bg-music');
+        bgMusic.volume = 0.5;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btnMute = document.getElementById('btn-mute');
+            if (isMuted) {
+                bgMusic.pause();
+                btnMute.innerText = "🔇";
+            } else {
+                bgMusic.play();
+                btnMute.innerText = "🔊";
+            }
+        }
+
+        // NAVEGAÇÃO ENTRE TELAS
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        setTimeout(() => { showScreen('screen-login'); }, 3000);
+
+        let nomeUsuario = "";
+        function fazerLogin() {
+            nomeUsuario = document.getElementById('input-user').value || "Jogador";
+            document.getElementById('display-user').innerText = nomeUsuario;
+            showScreen('screen-deposit');
+        }
+
+        function confirmarPix() {
+            const status = document.getElementById('pix-status');
+            status.style.color = "#4CAF50";
+            status.innerText = "✅ Pagamento Aprovado!";
+            status.style.animation = "none";
+            
+            setTimeout(() => {
+                showScreen('screen-game');
+                fillReels(false);
+            }, 1500);
+        }
+
+        // FLUXO DE SAQUE E POP-UPS
+        function tentarSacar() {
+            document.getElementById('withdraw-value').value = formatarMoeda(saldoAtual);
+            document.getElementById('modal-popup-1').style.display = 'flex';
+        }
+
+        function fecharModal1ParaJogo() {
+            document.getElementById('modal-popup-1').style.display = 'none';
+        }
+
+        function irParaTelaPix() {
+            document.getElementById('modal-popup-1').style.display = 'none';
+            showScreen('screen-withdraw');
+        }
+
+        function interromperSaqueComPopup2() {
+            document.getElementById('modal-popup-2').style.display = 'flex';
+        }
+
+        function voltarParaJogoDoPix() {
+            document.getElementById('modal-popup-2').style.display = 'none';
+            showScreen('screen-game');
+        }
+
+        function finalizarPixReal() {
+            document.getElementById('modal-popup-2').style.display = 'none';
+            showScreen('screen-success');
+
+            const toast = document.getElementById('toast-pix');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // LÓGICA DO URUBU FALANTE (Alternador de Frases - Ajustado para 6 segundos)
+        const frasesUrubu = [
+            "\"Confia no pai, a próxima rodada paga o dobro! 🦅\"",
+            "\"O Pix tá quentinho, só falta você girar mais uma! 💸\"",
+            "\"Quem não arrisca não petisca, recupera tudo agora! 🪙\"",
+            "\"O urubu tá sentindo cheiro de lucro alto aqui! 🔥\"",
+            "\"Vai parar agora? A sorte muda no próximo giro! 🍀\""
+        ];
+        let fraseIndex = 0;
+
+        setInterval(() => {
+            const speechEl = document.getElementById("urubu-speech");
+            if (speechEl) {
+                speechEl.style.opacity = 0;
+                setTimeout(() => {
+                    fraseIndex = (fraseIndex + 1) % frasesUrubu.length;
+                    speechEl.textContent = frasesUrubu[fraseIndex];
+                    speechEl.style.opacity = 1;
+                }, 300);
+            }
+        }, 6000);
+
+        // LÓGICA DO JOGO E APOSTAS
+        let saldoAtual = 1000.00;
+        let valorAposta = 50.00;
+        const saldoEl = document.getElementById("saldo");
+        const betDisplay = document.getElementById("bet-display");
+
+        function formatarMoeda(valor) { return "R$ " + valor.toFixed(2).replace('.', ','); }
+
+        function mudarAposta(valor) {
+            if (valorAposta + valor >= 10 && valorAposta + valor <= saldoAtual) {
+                valorAposta += valor;
+                betDisplay.innerText = formatarMoeda(valorAposta);
+            }
+        }
+
+        const btnSpin = document.getElementById("btn-fazer-a-boa");
+        const reels = [
+            document.querySelector("#reel-1 .symbols"),
+            document.querySelector("#reel-2 .symbols"),
+            document.querySelector("#reel-3 .symbols")
+        ];
+
+        const emojisArray = ["🩴", "🍺", "💼", "💸", "🦅", "🏍️", "🪙", "❌"];
+        
+        const roteiro = [
+            { ganha: true, multiplicador: 10 },   
+            { ganha: true, multiplicador: 0.5 },  
+            { ganha: false, multiplicador: 0 },   
+            { ganha: false, multiplicador: 0 },   
+            { ganha: true, multiplicador: 0.2 },  
+            { ganha: false, multiplicador: 0 },   
+            { ganha: true, multiplicador: 0.4 },  
+            { ganha: false, multiplicador: 0 }    
+        ];
+        let rodadaAtual = 0;
+
+        function choverMoedas() {
+            const coinShower = document.getElementById("coin-shower");
+            coinShower.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.classList.add('falling-coin');
+                    coin.textContent = "🪙";
+                    coin.style.left = Math.random() * 100 + "vw";
+                    coin.style.animationDuration = (Math.random() * 2 + 1.5) + "s"; 
+                    coinShower.appendChild(coin);
+                    setTimeout(() => coin.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        function fillReels(vaiGanhar) {
+            reels.forEach(reel => {
+                reel.innerHTML = ''; 
+                for (let i = 0; i < 35; i++) {
+                    const randomEmoji = emojisArray[Math.floor(Math.random() * emojisArray.length)];
+                    const symbolDiv = document.createElement("div");
+                    symbolDiv.classList.add("symbol");
+                    symbolDiv.textContent = randomEmoji;
+                    reel.appendChild(symbolDiv);
+                }
+                for (let i = 35; i < 38; i++) {
+                    const symbolDiv = document.createElement("div");
+                    symbolDiv.classList.add("symbol");
+                    if (i === 36) { 
+                        symbolDiv.textContent = vaiGanhar ? "🦅" : emojisArray[Math.floor(Math.random() * emojisArray.length)];
+                    } else {
+                        symbolDiv.textContent = emojisArray[Math.floor(Math.random() * emojisArray.length)];
+                    }
+                    reel.appendChild(symbolDiv);
+                }
+            });
+        }
+
+        btnSpin.addEventListener("click", () => {
+            if (saldoAtual < valorAposta) { alert("Saldo insuficiente!"); return; }
+
+            const configRodada = roteiro[rodadaAtual < roteiro.length ? rodadaAtual : roteiro.length - 1];
+            
+            saldoAtual -= valorAposta;
+            saldoEl.textContent = formatarMoeda(saldoAtual);
+            saldoEl.style.color = "#ff4444";
+
+            btnSpin.disabled = true;
+            btnSpin.style.animation = "none";
+            
+            fillReels(configRodada.ganha);
+
+            reels.forEach((reel, index) => {
+                reel.style.transition = "none";
+                reel.style.transform = `translateY(0px)`;
+                reel.parentElement.classList.add("spinning");
+
+                setTimeout(() => {
+                    const spinDuration = 2000 + (index * 800); 
+                    reel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
+                    const distanceToScroll = -(60 * 35); 
+                    reel.style.transform = `translateY(${distanceToScroll}px)`;
+
+                    setTimeout(() => {
+                        reel.parentElement.classList.remove("spinning");
+                        
+                        if (index === 2) {
+                            btnSpin.disabled = false;
+                            btnSpin.style.animation = "pulse 1.5s infinite";
+                            saldoEl.style.color = "#4CAF50"; 
+                            
+                            if (configRodada.ganha) {
+                                const premio = valorAposta * configRodada.multiplicador;
+                                saldoAtual += premio;
+                                saldoEl.textContent = formatarMoeda(saldoAtual);
+                                
+                                if(!isMuted) {
+                                    const winAudio = document.getElementById("win-sound");
+                                    winAudio.currentTime = 0;
+                                    winAudio.play();
+                                }
+
+                                choverMoedas();
+                                
+                                const balanceBox = document.getElementById("balance-box");
+                                balanceBox.style.boxShadow = "inset 0 0 30px rgba(0, 255, 0, 0.8)";
+                                setTimeout(() => balanceBox.style.boxShadow = "inset 0 0 15px rgba(255, 215, 0, 0.4)", 500);
+                            }
+                            rodadaAtual++;
+                        }
+                    }, spinDuration);
+                }, 50); 
+            });
+        });
+    </script>
+</body>
+</html>
