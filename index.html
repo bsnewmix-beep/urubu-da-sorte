@@ -36,7 +36,6 @@
             overflow: hidden;
         }
 
-        /* Botão de Som Global */
         #btn-mute {
             position: absolute;
             top: 15px;
@@ -56,7 +55,6 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
 
-        /* Sistema de Telas */
         .screen {
             display: none;
             width: 100%;
@@ -78,7 +76,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* TELA DE SPLASH & LOGIN MASCOT */
         .mascot-img {
             width: 250px;
             height: 250px;
@@ -109,7 +106,6 @@
             text-shadow: 2px 2px 5px #000;
         }
 
-        /* ELEMENTO TREVO */
         .clover-container {
             margin-top: 30px;
             text-align: center;
@@ -134,7 +130,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* INPUTS E BOTÕES */
         .input-group {
             width: 100%;
             margin-bottom: 15px;
@@ -157,6 +152,13 @@
             color: white;
             font-size: 16px;
         }
+        
+        .input-group input[type="number"] {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+        }
 
         .btn-primary {
             background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
@@ -164,22 +166,35 @@
             border: none;
             padding: 15px;
             width: 100%;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             border-radius: 10px;
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
 
-        /* TELAS RESTANTES (PIX E JOGO) */
-        .pix-container { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px; border: 2px dashed #4CAF50; width: 100%; }
-        .qr-code { width: 200px; height: 200px; margin: 20px auto; background: white; padding: 10px; border-radius: 10px; cursor: pointer; }
-        .qr-code img { width: 100%; height: 100%; }
-        .pix-loading { color: #aaa; font-size: 14px; margin-top: 15px; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .btn-green { background: linear-gradient(180deg, #4CAF50 0%, #2e7d32 100%); color: white; border: 2px solid #ffd700; }
+        .btn-blue { background: linear-gradient(180deg, #2196F3 0%, #1565C0 100%); color: white; border: 2px solid #ffd700; }
+        .btn-dark { background: #333; color: white; border: 1px solid #777; font-size: 14px; }
 
-        /* HEADER E SALDO CENTRALIZADO */
+        /* SCROLL PARA O FORMULÁRIO DO CARTÃO */
+        .form-scroll-area {
+            width: 100%;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 10px;
+            text-align: left;
+        }
+        
+        .form-scroll-area::-webkit-scrollbar { width: 5px; }
+        .form-scroll-area::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
+
+        .pix-container { background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px; border: 2px dashed #4CAF50; width: 100%; }
+        .qr-code { width: 200px; height: 200px; margin: 15px auto; background: white; padding: 10px; border-radius: 10px; }
+        .qr-code img { width: 100%; height: 100%; }
+
         .header { 
             width: 100%; 
             display: flex; 
@@ -190,13 +205,7 @@
             position: relative; 
         }
         
-        .user-info { 
-            font-size: 13px; 
-            color: #ddd; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-        }
+        .user-info { font-size: 13px; color: #ddd; display: flex; align-items: center; gap: 5px; }
         
         .balance-box { 
             background: #000; 
@@ -211,18 +220,13 @@
         
         .value { font-size: 15px; font-weight: bold; color: #4CAF50; }
 
-        /* BOTÃO DE SAQUE REPOSICIONADO */
-        .withdraw-wrapper {
-            width: 90%;
-            margin: 3px 0 6px 0;
-        }
-
+        .withdraw-wrapper { width: 90%; margin: 3px 0 5px 0; }
         .btn-withdraw-main {
             background: linear-gradient(180deg, #4CAF50 0%, #2e7d32 100%);
             color: white;
             border: 2px solid #ffd700;
-            padding: 6px;
-            font-size: 14px;
+            padding: 5px;
+            font-size: 13px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
@@ -231,21 +235,20 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
-        .slot-machine { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; background: rgba(0, 0, 0, 0.6); border-top: 2px solid #ffd700; border-bottom: 2px solid #ffd700; position: relative; margin: 4px 0; height: 190px; max-height: 190px; }
-        .win-line { position: absolute; top: 50%; left: 0; width: 100%; height: 63px; transform: translateY(-50%); border-top: 2px dashed rgba(255, 215, 0, 0.5); border-bottom: 2px dashed rgba(255, 215, 0, 0.5); background: rgba(255, 215, 0, 0.1); z-index: 5; pointer-events: none; }
-        .reel { width: 70px; height: 190px; background: #fff; border-radius: 8px; overflow: hidden; border: 2px solid #ffd700; }
+        .slot-machine { display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; background: rgba(0, 0, 0, 0.6); border-top: 2px solid #ffd700; border-bottom: 2px solid #ffd700; position: relative; margin: 3px 0; height: 180px; max-height: 180px; }
+        .win-line { position: absolute; top: 50%; left: 0; width: 100%; height: 60px; transform: translateY(-50%); border-top: 2px dashed rgba(255, 215, 0, 0.5); border-bottom: 2px dashed rgba(255, 215, 0, 0.5); background: rgba(255, 215, 0, 0.1); z-index: 5; pointer-events: none; }
+        .reel { width: 70px; height: 180px; background: #fff; border-radius: 8px; overflow: hidden; border: 2px solid #ffd700; }
         .symbols { display: flex; flex-direction: column; }
-        .symbol { width: 100%; height: 63px; display: flex; justify-content: center; align-items: center; font-size: 34px; border-bottom: 1px solid #ccc; }
+        .symbol { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 32px; border-bottom: 1px solid #ccc; }
         
         .bet-controls { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 4px; }
-        .bet-btn { background: #333; color: #ffd700; border: 2px solid #ffd700; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .bet-btn { background: #333; color: #ffd700; border: 2px solid #ffd700; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer; }
         .bet-amount { font-size: 16px; color: white; font-weight: bold; min-width: 80px; text-align: center; }
-        .btn-spin { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: #000; border: 2px solid #fff; padding: 8px 20px; font-size: 18px; font-weight: 900; border-radius: 40px; cursor: pointer; width: 90%; animation: pulse 1.5s infinite; margin-bottom: 5px; }
+        .btn-spin { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: #000; border: 2px solid #fff; padding: 7px 20px; font-size: 17px; font-weight: 900; border-radius: 40px; cursor: pointer; width: 90%; animation: pulse 1.5s infinite; margin-bottom: 4px; }
         
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .spinning .symbol { filter: blur(5px); }
 
-        /* URUBU ASSISTENTE COM FALAS */
         .urubu-assistant {
             display: flex;
             align-items: center;
@@ -253,14 +256,14 @@
             width: 90%;
             background: rgba(0, 0, 0, 0.5);
             border: 2px dashed #ffd700;
-            padding: 5px 8px;
+            padding: 4px 8px;
             border-radius: 10px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .urubu-mini-img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: 2px solid #ffd700;
             object-fit: cover;
@@ -275,18 +278,18 @@
             transition: opacity 0.4s ease;
         }
 
-        /* URUBU PULSANTE NO ESPAÇO VAZIO DO FUNDO */
         .bottom-mascot-container {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            padding-bottom: 5px;
+            margin-top: auto;
+            padding-bottom: 12px;
         }
 
         .pulsing-urubu {
-            width: 95px;
-            height: 95px;
+            width: 125px;
+            height: 125px;
             border-radius: 50%;
             border: 3px solid #ffd700;
             object-fit: cover;
@@ -294,17 +297,10 @@
         }
 
         @keyframes pulseMascot {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            }
-            50% {
-                transform: scale(1.08);
-                box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
-            }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+            50% { transform: scale(1.1); box-shadow: 0 0 35px rgba(255, 215, 0, 1); }
         }
 
-        /* MODAIS / POP-UPS ESTILO NOTIFICAÇÃO */
         .modal-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -333,52 +329,19 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .modal-title {
-            color: #ffd700;
-            font-size: 20px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+        .modal-title { color: #ffd700; font-size: 20px; margin-bottom: 15px; font-weight: bold; text-transform: uppercase; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-modal-green { background: #4CAF50; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase; }
+        .btn-modal-gold { background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase; }
 
-        .modal-btns {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-modal-green {
-            background: #4CAF50; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase;
-        }
-
-        .btn-modal-gold {
-            background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* Notificação Toast Flutuante (Simulando PIX Feito) */
         .toast-notification {
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #111;
-            border: 2px solid #4CAF50;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 350px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: top 0.5s ease;
-            z-index: 300;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #111; border: 2px solid #4CAF50; color: white; padding: 15px 20px;
+            border-radius: 10px; width: 90%; max-width: 350px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: top 0.5s ease; z-index: 300; display: flex; align-items: center; gap: 15px;
         }
 
-        .toast-notification.show {
-            top: 20px;
-        }
+        .toast-notification.show { top: 20px; }
 
         .coin-shower { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 100; overflow: hidden; }
         .falling-coin { position: absolute; font-size: 30px; top: -50px; animation: fall linear forwards; }
@@ -393,7 +356,6 @@
     
     <div class="coin-shower" id="coin-shower"></div>
 
-    <!-- TOAST DE NOTIFICAÇÃO PIX FEITO -->
     <div id="toast-pix" class="toast-notification">
         <span style="font-size: 30px;">✅</span>
         <div style="text-align: left;">
@@ -404,10 +366,9 @@
 
     <div class="game-container">
         
-        <!-- Botão de Mudo Global -->
         <button id="btn-mute" onclick="toggleMute()">🔇</button>
         
-        <!-- POP-UP 1: TENTATIVA DE SAQUE -->
+        <!-- POP-UPS SAQUE -->
         <div id="modal-popup-1" class="modal-overlay">
             <div class="modal-box">
                 <div class="modal-title">🚨 Atenção</div>
@@ -419,7 +380,6 @@
             </div>
         </div>
 
-        <!-- POP-UP 2: ANTES DE FINALIZAR O PIX -->
         <div id="modal-popup-2" class="modal-overlay">
             <div class="modal-box">
                 <div class="modal-title">🔥 Oportunidade Única</div>
@@ -459,22 +419,85 @@
             </div>
         </div>
 
-        <!-- TELA 3: DEPÓSITO PIX -->
+        <!-- TELA 3: ESCOLHA DE DEPÓSITO E VALOR -->
         <div id="screen-deposit" class="screen">
-            <h2 style="color: #4CAF50; margin-bottom: 10px;">Saldo Insuficiente</h2>
-            <p style="color: #ddd; margin-bottom: 20px;">Realize um depósito de R$ 1.000,00 via PIX para liberar o jogo.</p>
+            <h2 style="color: #ffd700; margin-bottom: 10px;">Caixa do Urubu</h2>
+            <p style="color: #ddd; margin-bottom: 20px;">Insira o valor que deseja depositar para começar a lucrar.</p>
+            
+            <div class="input-group">
+                <label>Valor do Depósito (R$)</label>
+                <input type="number" id="input-deposit-amount" value="1000" min="10" step="10">
+            </div>
+
+            <p style="color: #aaa; font-size: 14px; margin: 10px 0;">Escolha a forma de pagamento:</p>
+            
+            <button class="btn-primary btn-green" onclick="escolherPagamento('pix')">💎 Depositar via PIX</button>
+            <button class="btn-primary btn-blue" onclick="escolherPagamento('cartao')">💳 Depositar via Cartão</button>
+        </div>
+
+        <!-- TELA 3A: PIX CHECKOUT -->
+        <div id="screen-pix-checkout" class="screen">
+            <h2 style="color: #4CAF50; margin-bottom: 10px;">Pagamento via PIX</h2>
+            <p style="color: #ddd; margin-bottom: 15px; font-size: 18px;">Valor: <span id="pix-amount-display" style="font-weight: bold; color: #ffd700;">R$ 1.000,00</span></p>
             
             <div class="pix-container">
-                <h3 style="color: white;">Escaneie o QR Code</h3>
-                <div class="qr-code" onclick="confirmarPix()">
+                <h3 style="color: white; font-size: 15px;">Escaneie o QR Code abaixo:</h3>
+                <div class="qr-code">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=UrubuPixFalso" alt="QR Code PIX">
                 </div>
-                <p class="pix-loading" id="pix-status">Aguardando pagamento...</p>
+                
+                <div class="input-group" style="margin-top: 15px;">
+                    <label style="text-align: center;">Ou utilize a chave PIX Copia e Cola:</label>
+                    <div style="display: flex; gap: 5px; align-items: center; justify-content: center;">
+                        <input type="text" id="pix-key" value="00020126580014br.gov.bcb.pix0136urubu-fake-1234" readonly style="padding: 10px; font-size: 11px; text-align: center;">
+                    </div>
+                    <button onclick="copiarPix()" style="width: 100%; padding: 12px; margin-top: 8px; background: #ffd700; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">📋 Copiar Chave PIX</button>
+                </div>
+                <button class="btn-primary" onclick="confirmarPagamentoRealizado()" style="margin-top: 10px; font-size: 15px;">Já fiz o pagamento</button>
             </div>
+            <button class="btn-primary btn-dark" onclick="showScreen('screen-deposit')">Voltar</button>
+        </div>
+
+        <!-- TELA 3B: CARTÃO CHECKOUT -->
+        <div id="screen-card-checkout" class="screen">
+            <h2 style="color: #2196F3; margin-bottom: 10px;">Cartão de Crédito</h2>
+            <p style="color: #ddd; margin-bottom: 15px; font-size: 18px;">Valor a debitar: <span id="card-amount-display" style="font-weight: bold; color: #ffd700;">R$ 1.000,00</span></p>
+            
+            <div class="form-scroll-area">
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" placeholder="Nome impresso no cartão">
+                </div>
+                <div class="input-group">
+                    <label>CPF</label>
+                    <input type="text" placeholder="000.000.000-00">
+                </div>
+                <div class="input-group">
+                    <label>Endereço Completo</label>
+                    <input type="text" placeholder="Rua, Número, Bairro, Cidade - UF">
+                </div>
+                <div class="input-group">
+                    <label>Número do Cartão</label>
+                    <input type="text" placeholder="0000 0000 0000 0000">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>Validade</label>
+                        <input type="text" placeholder="MM/AA">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-primary btn-blue" onclick="confirmarPagamentoRealizado()" style="margin-top: 15px;">Finalizar Pagamento</button>
+            <button class="btn-primary btn-dark" onclick="showScreen('screen-deposit')">Voltar</button>
         </div>
 
         <!-- TELA 4: JOGO -->
-        <div id="screen-game" class="screen" style="justify-content: flex-start; padding: 0;">
+        <div id="screen-game" class="screen" style="justify-content: flex-start; padding: 0; display: flex; flex-direction: column;">
             <header class="header">
                 <div class="user-info">
                     👤 <span id="display-user">Usuário</span>
@@ -506,17 +529,17 @@
 
             <!-- Assistente Urubu com Frases -->
             <div class="urubu-assistant">
-                <img src="urubu.png" alt="Urubu" class="urubu-mini-img" onerror="this.src='https://via.placeholder.com/32/000000/FFD700?text=🦅'">
+                <img src="urubu.png" alt="Urubu" class="urubu-mini-img" onerror="this.src='https://via.placeholder.com/30/000000/FFD700?text=🦅'">
                 <div class="speech-bubble" id="urubu-speech">"Confia no pai, a próxima rodada paga o dobro! 🦅"</div>
             </div>
 
-            <!-- Urubu Pulsante no Espaço Vazio do Fundo -->
+            <!-- Urubu Pulsante Maior no Espaço Vazio Inferior -->
             <div class="bottom-mascot-container">
-                <img src="urubu.png" alt="Urubu Pulsante" class="pulsing-urubu" onerror="this.src='https://via.placeholder.com/95/000000/FFD700?text=URUBU'">
+                <img src="urubu.png" alt="Urubu Pulsante" class="pulsing-urubu" onerror="this.src='https://via.placeholder.com/125/000000/FFD700?text=URUBU'">
             </div>
         </div>
 
-        <!-- TELA 5: TELA DE SAQUE (PIX PARA CPF) -->
+        <!-- TELA 5: TELA DE SAQUE -->
         <div id="screen-withdraw" class="screen">
             <h2 style="color: #ffd700; margin-bottom: 15px;">Área de Saque PIX</h2>
             <p style="color: #ddd; font-size: 14px; margin-bottom: 20px;">Insira sua chave CPF para resgatar seu saldo atual.</p>
@@ -576,16 +599,50 @@
             showScreen('screen-deposit');
         }
 
-        function confirmarPix() {
-            const status = document.getElementById('pix-status');
-            status.style.color = "#4CAF50";
-            status.innerText = "✅ Pagamento Aprovado!";
-            status.style.animation = "none";
-            
-            setTimeout(() => {
-                showScreen('screen-game');
-                fillReels(false);
-            }, 1500);
+        // LÓGICA DE DEPÓSITO
+        let valorDepositado = 0;
+        let saldoAtual = 0;
+        const saldoEl = document.getElementById("saldo");
+
+        function formatarMoeda(valor) { return "R$ " + valor.toFixed(2).replace('.', ','); }
+
+        function escolherPagamento(metodo) {
+            const inputValor = document.getElementById('input-deposit-amount').value;
+            valorDepositado = parseFloat(inputValor) || 0;
+
+            if (valorDepositado < 10) {
+                alert("O valor mínimo para depósito é de R$ 10,00.");
+                return;
+            }
+
+            const valorFormatado = formatarMoeda(valorDepositado);
+
+            if (metodo === 'pix') {
+                document.getElementById('pix-amount-display').innerText = valorFormatado;
+                showScreen('screen-pix-checkout');
+            } else if (metodo === 'cartao') {
+                document.getElementById('card-amount-display').innerText = valorFormatado;
+                showScreen('screen-card-checkout');
+            }
+        }
+
+        function copiarPix() {
+            const pixKey = document.getElementById('pix-key');
+            pixKey.select();
+            pixKey.setSelectionRange(0, 99999); // Para mobile
+            navigator.clipboard.writeText(pixKey.value).then(() => {
+                alert("Chave PIX copiada com sucesso!");
+            });
+        }
+
+        function confirmarPagamentoRealizado() {
+            // Define o saldo atual do jogo de acordo com o valor digitado
+            saldoAtual = valorDepositado;
+            saldoEl.innerText = formatarMoeda(saldoAtual);
+
+            // Inicia o Jogo
+            showScreen('screen-game');
+            fillReels(false);
         }
 
         // FLUXO DE SAQUE E POP-UPS
@@ -623,7 +680,7 @@
             }, 4000);
         }
 
-        // LÓGICA DO URUBU FALANTE (Alternador de Frases)
+        // LÓGICA DO URUBU FALANTE
         const frasesUrubu = [
             "\"Confia no pai, a próxima rodada paga o dobro! 🦅\"",
             "\"O Pix tá quentinho, só falta você girar mais uma! 💸\"",
@@ -643,15 +700,11 @@
                     speechEl.style.opacity = 1;
                 }, 300);
             }
-        }, 4000);
+        }, 6000);
 
         // LÓGICA DO JOGO E APOSTAS
-        let saldoAtual = 1000.00;
         let valorAposta = 50.00;
-        const saldoEl = document.getElementById("saldo");
         const betDisplay = document.getElementById("bet-display");
-
-        function formatarMoeda(valor) { return "R$ " + valor.toFixed(2).replace('.', ','); }
 
         function mudarAposta(valor) {
             if (valorAposta + valor >= 10 && valorAposta + valor <= saldoAtual) {
@@ -721,7 +774,7 @@
         }
 
         btnSpin.addEventListener("click", () => {
-            if (saldoAtual < valorAposta) { alert("Saldo insuficiente!"); return; }
+            if (saldoAtual < valorAposta) { alert("Saldo insuficiente! Você não possui saldo para esta aposta."); return; }
 
             const configRodada = roteiro[rodadaAtual < roteiro.length ? rodadaAtual : roteiro.length - 1];
             
@@ -742,7 +795,7 @@
                 setTimeout(() => {
                     const spinDuration = 2000 + (index * 800); 
                     reel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
-                    const distanceToScroll = -(63 * 35); 
+                    const distanceToScroll = -(60 * 35); 
                     reel.style.transform = `translateY(${distanceToScroll}px)`;
 
                     setTimeout(() => {
